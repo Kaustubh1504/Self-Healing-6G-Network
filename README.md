@@ -4,9 +4,11 @@ A proof-of-concept of the multi-agent self-healing architecture from Wu et al. (
 
 ## Demo
 
+https://github.com/user-attachments/assets/6e6661b8-ccda-4b2b-a379-904a0fe7e6e4
+
 ![Dashboard screenshot](docs/demo.png)
 
-[Watch the full demo (docs/demo.mov)](docs/demo.mov)
+[Watch the full demo on YouTube](https://youtu.be/F7ZEzsfiHCE)
 
 ```bash
 pip install -r requirements.txt
