@@ -1,6 +1,6 @@
 # Self-Healing 6G Network (Proof of Concept)
 
-A proof-of-concept of the multi-agent self-healing architecture from Wu et al. (KDD 2026), built around the two infrastructure components from §3.3: a network digital twin and a telecommunications knowledge graph. The digital twin (NetworkX) streams real 5G telemetry from TelecomTS through a 6G-inspired topology with fault cascade propagation. The knowledge graph (RDFLib + SPARQL) encodes alarm-to-root-cause-to-remediation triples, grounding diagnosis in structured domain knowledge. When a fault fires, four LangGraph-orchestrated agents detect the anomaly, diagnose via the KG, verify the fix against the twin, and execute recovery, with every step visible in a live reasoning trace.
+A proof-of-concept of the multi-agent self-healing architecture from Wu et al. (KDD 2026), built around two infrastructure components: a network digital twin and a telecommunications knowledge graph. The digital twin (NetworkX) streams real 5G telemetry from TelecomTS through a 6G-inspired topology with fault cascade propagation. The knowledge graph (RDFLib + SPARQL) encodes alarm-to-root-cause-to-remediation triples, grounding diagnosis in structured domain knowledge. When a fault fires, four LangGraph-orchestrated agents detect the anomaly, diagnose via the KG, verify the fix against the twin, and execute recovery, with every step visible in a live reasoning trace.
 
 ```bash
 pip install -r requirements.txt
@@ -73,3 +73,14 @@ The knowledge graph (`knowledge/`) is RDF triples plus SPARQL. It grounds the di
 | Data | pandas, numpy (TelecomTS traces) |
 
 Pure Python 3.10+, no GPU, runs on a laptop.
+
+## Known Limitations
+
+1. **Pillar 2 only.** This covers the multi-agent self-healing loop. The foundation model (Pillar 1) is not implemented. GPT-4o-mini stands in for what the paper envisions as a telecom-specific model.
+2. **Sequential pipeline, not parallel agents.** The paper describes many specialized agents (beamforming, spectrum, charging, slicing) running concurrently with conflict resolution. This implementation runs four agents in a fixed sequence. Only one healing cycle runs at a time.
+3. **Simplified twin.** Real 5G telemetry covers three radio edges only. Core network telemetry is synthetic. Fault cascades propagate through CPU-to-link coupling, not full protocol stack simulation.
+4. **Five fault scenarios.** The knowledge graph encodes five alarm patterns. A production system would need thousands of failure modes, temporal reasoning over metric sequences, and the security hardening described in Section 4 of the paper.
+
+## Reference
+
+Liang Wu, Kelly Wan, Mayank Darbari, and Liangjie Hong. *Towards Resilient and Autonomous Networks: A BlueSky Vision on AI-Native 6G.* Nokia, Sunnyvale, California, USA. KDD 2026.
