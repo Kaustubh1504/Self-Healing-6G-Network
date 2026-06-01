@@ -26,7 +26,7 @@ from langgraph.graph import END, StateGraph
 from agents import detector, diagnosis as diagnosis_agent, executor, planner as planner_agent
 from knowledge.queries import find_remediation
 
-DEBOUNCE = 3    # ticks of sustained violation before diagnosing (suppresses noise spikes)
+DEBOUNCE = 2    # ticks of sustained violation before diagnosing (suppresses noise spikes)
 COOLDOWN = 10   # ticks after a cycle before the detector can re-trigger
 RECOVERY_GIVEUP = 12  # ticks after applying a fix before declaring recovery failed
 

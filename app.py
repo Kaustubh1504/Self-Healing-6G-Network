@@ -7,10 +7,10 @@ Run with:  streamlit run app.py
 """
 
 import contextlib
+import time
 
 import streamlit as st
 from dotenv import load_dotenv
-from streamlit_autorefresh import st_autorefresh
 
 load_dotenv()  # read OPENAI_API_KEY from .env before the agents check for it
 
@@ -86,10 +86,17 @@ with st.sidebar:
     st.title("6G Self-Healing")
     st.caption("Phase 1 — radio edges replay real TelecomTS 5G traces")
 
-    toggle = "⏸ Pause" if st.session_state.running else "▶ Start"
-    if st.button(toggle, use_container_width=True):
-        st.session_state.running = not st.session_state.running
-        st.rerun()
+    col_run, col_step = st.columns(2)
+    with col_run:
+        toggle = "⏸ Pause" if st.session_state.running else "▶ Start"
+        if st.button(toggle, use_container_width=True):
+            st.session_state.running = not st.session_state.running
+            st.rerun()
+    with col_step:
+        if st.button("⏭ Step", use_container_width=True, disabled=st.session_state.running,
+                     help="Advance one tick (while paused) to watch the loop step by step."):
+            st.session_state.do_step = True
+            st.rerun()
 
     st.session_state.speed = st.slider("Seconds per tick", 0.2, 2.0, st.session_state.speed, 0.1)
     st.metric("Tick", st.session_state.tick)
@@ -128,12 +135,9 @@ with st.sidebar:
             remaining = f.duration_ticks - (st.session_state.tick - f.start_tick)
             st.write(f"• {f.label} — {max(0, remaining)} ticks left")
 
-# ----- Live updating: browser-driven refresh, one sim tick per interval -----
-if st.session_state.running:
-    count = st_autorefresh(interval=int(st.session_state.speed * 1000), key="sim_tick")
-    if count != st.session_state.get("last_tick_count"):
-        st.session_state.last_tick_count = count
-        _step(advance=True)
+# ----- Advance the simulation: one tick per run while running, or one manual step -----
+if st.session_state.running or st.session_state.pop("do_step", False):
+    _step(advance=True)
 
 # ----- Self-healing loop: invoke the agent orchestrator each run (idempotent per tick) -----
 approve = st.session_state.approve_clicked
@@ -203,3 +207,8 @@ with healing_col:
         st.error("Healing loop error (the agents hit an exception):")
         st.code(st.session_state.healing_error)
     reasoning_trace.render(st.session_state.healing, st.session_state.kg)
+
+# ----- Auto-advance: native sleep+rerun loop (reliable across Streamlit versions) -----
+if st.session_state.running:
+    time.sleep(st.session_state.speed)
+    st.rerun()

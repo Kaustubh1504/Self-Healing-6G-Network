@@ -8,6 +8,7 @@ path drawn inline inside the Diagnosis step.
 import plotly.graph_objects as go
 import streamlit as st
 
+from agents import orchestrator
 from knowledge.queries import kg_path
 
 # Reasoning trace colours (per the project style guide).
@@ -145,7 +146,7 @@ def render(state: dict, kg) -> None:
     n_faults = len(state.get("active_faults", []))
     diag = f"tick {state.get('tick', 0)} · {n_faults} active fault(s)"
     if status in ("idle", "detecting") and state.get("debounce_count"):
-        diag += f" · confirming {state['debounce_count']}/3"
+        diag += f" · confirming {state['debounce_count']}/{orchestrator.DEBOUNCE}"
     if state.get("cooldown_remaining"):
         diag += f" · cooldown {state['cooldown_remaining']}"
     st.caption(diag)
