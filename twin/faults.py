@@ -113,6 +113,11 @@ def is_expired(fault: Fault, current_tick: int) -> bool:
     return current_tick - fault.start_tick >= fault.duration_ticks
 
 
+def remove_fault(active_faults: list[Fault], fault_name: str) -> list[Fault]:
+    """Return active_faults with every fault named `fault_name` cleared (Executor's fix)."""
+    return [f for f in active_faults if f.name != fault_name]
+
+
 def _merge_mult(target: dict, overrides: dict) -> None:
     """Multiply `overrides` into `target` so stacked faults compound."""
     for metric, mult in overrides.items():

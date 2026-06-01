@@ -43,7 +43,7 @@ _NOISE = {
     "utilization_pct": 0.04,
 }
 
-NODE_METRICS = ["cpu_pct", "memory_pct", "active_sessions"]
+NODE_METRICS = ["cpu_pct", "memory_pct", "active_sessions", "status"]
 EDGE_METRICS = ["latency_ms", "throughput_mbps", "packet_loss_pct", "utilization_pct"]
 
 
@@ -86,7 +86,7 @@ def init_store(graph: nx.Graph) -> dict[str, pd.DataFrame]:
 def _node_record(data: dict, status: str, load: dict, diurnal: float) -> dict:
     """One tick of synthesised node telemetry, with diurnal drift and fault loads."""
     if status == DOWN:  # a downed function processes nothing
-        return {"cpu_pct": 0.0, "memory_pct": 0.0, "active_sessions": 0}
+        return {"cpu_pct": 0.0, "memory_pct": 0.0, "active_sessions": 0, "status": status}
     cpu_center = load["cpu"] if "cpu" in load else data["cpu_baseline"] * diurnal
     mem_center = load["mem"] if "mem" in load else data["memory_baseline"] * diurnal
     sess_center = data["sessions_baseline"] * diurnal * load.get("sessions_mult", 1.0)
@@ -94,6 +94,7 @@ def _node_record(data: dict, status: str, load: dict, diurnal: float) -> dict:
         "cpu_pct": float(np.clip(_noisy(cpu_center, "cpu_pct"), 0.0, 100.0)),
         "memory_pct": float(np.clip(_noisy(mem_center, "memory_pct"), 0.0, 100.0)),
         "active_sessions": int(max(0.0, _noisy(sess_center, "active_sessions"))),
+        "status": status,
     }
 
 
