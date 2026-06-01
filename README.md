@@ -2,6 +2,12 @@
 
 A proof-of-concept of the multi-agent self-healing architecture from Wu et al. (KDD 2026), built around two infrastructure components: a network digital twin and a telecommunications knowledge graph. The digital twin (NetworkX) streams real 5G telemetry from TelecomTS through a 6G-inspired topology with fault cascade propagation. The knowledge graph (RDFLib + SPARQL) encodes alarm-to-root-cause-to-remediation triples, grounding diagnosis in structured domain knowledge. When a fault fires, four LangGraph-orchestrated agents detect the anomaly, diagnose via the KG, verify the fix against the twin, and execute recovery, with every step visible in a live reasoning trace.
 
+## Demo
+
+![Dashboard screenshot](docs/demo.png)
+
+[Watch the full demo (docs/demo.mov)](docs/demo.mov)
+
 ```bash
 pip install -r requirements.txt
 python -m twin.dataset        # one-time: build the real 5G traces

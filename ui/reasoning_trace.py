@@ -49,30 +49,34 @@ def _kg_path_figure(kg, root_cause: str) -> go.Figure | None:
     for (a, _, _, xa), (b, _, _, xb), pred in zip(chain, chain[1:], ("indicates", "resolvedBy")):
         fig.add_trace(go.Scatter(x=[xa, xb], y=[1, 1], mode="lines",
                                  line=dict(color="#888", width=2), hoverinfo="skip", showlegend=False))
-        fig.add_annotation(x=(xa + xb) / 2, y=1.12, text=f"<i>{pred}</i>", showarrow=False,
-                           font=dict(size=10, color="#AAA"))
+        fig.add_annotation(x=(xa + xb) / 2, y=1.12, text=f"<b>{pred}</b>", showarrow=False,
+                           font=dict(size=11, color="#CCCCCC"))
 
     for label, role, color, x in chain:
+        # Category label above the node (so it's clear what the node represents).
+        fig.add_annotation(x=x, y=1.34, text=f"<b>{role.upper()}</b>", showarrow=False,
+                           font=dict(size=11, color=color))
+        # The value inside/below the node.
         fig.add_trace(go.Scatter(
             x=[x], y=[1], mode="markers+text", text=[f"<b>{label}</b>"], textposition="bottom center",
             marker=dict(size=26, color=color, line=dict(color="white", width=1.5)),
-            hovertext=role, hoverinfo="text", textfont=dict(size=12, color="#EEE"), showlegend=False,
+            hovertext=role, hoverinfo="text", textfont=dict(size=13, color="#FFFFFF"), showlegend=False,
         ))
 
     # Affected entities branch off the root cause (TEL:affects).
     affected = path["affected_entities"]
+    fig.add_annotation(x=1.0, y=0.6, text="<b>AFFECTS</b>", showarrow=False, font=dict(size=11, color="#999999"))
     for i, ent in enumerate(affected):
         ex = 1.0 + (i - (len(affected) - 1) / 2) * 0.5
-        fig.add_trace(go.Scatter(x=[1.0, ex], y=[1, 0.3], mode="lines",
+        fig.add_trace(go.Scatter(x=[1.0, ex], y=[0.85, 0.2], mode="lines",
                                  line=dict(color="#555", width=1, dash="dot"), hoverinfo="skip", showlegend=False))
-        fig.add_trace(go.Scatter(x=[ex], y=[0.3], mode="markers+text", text=[ent], textposition="bottom center",
-                                 marker=dict(size=12, color="#666"), textfont=dict(size=10, color="#BBB"),
+        fig.add_trace(go.Scatter(x=[ex], y=[0.2], mode="markers+text", text=[f"<b>{ent}</b>"], textposition="bottom center",
+                                 marker=dict(size=12, color="#888"), textfont=dict(size=11, color="#FFFFFF"),
                                  hovertext="affected entity", hoverinfo="text", showlegend=False))
-    if affected:
-        fig.add_annotation(x=1.0, y=0.66, text="<i>affects</i>", showarrow=False, font=dict(size=10, color="#AAA"))
 
-    fig.update_layout(template="plotly_dark", height=210, margin=dict(l=10, r=10, t=20, b=10),
-                      xaxis=dict(visible=False, range=[-0.5, 2.7]), yaxis=dict(visible=False, range=[0.0, 1.3]))
+    fig.update_layout(template="plotly_dark", height=240, margin=dict(l=10, r=10, t=10, b=10),
+                      paper_bgcolor="#0E1117", plot_bgcolor="#0E1117",
+                      xaxis=dict(visible=False, range=[-0.5, 2.7]), yaxis=dict(visible=False, range=[-0.15, 1.5]))
     return fig
 
 
@@ -90,7 +94,7 @@ def _diagnosis(e: dict, kg) -> None:
     fig = _kg_path_figure(kg, e["root_cause"])
     if fig is not None:
         st.caption("Matched knowledge-graph path:")
-        st.plotly_chart(fig, use_container_width=True, key=f"kgpath_{e['tick']}")
+        st.plotly_chart(fig, use_container_width=True, key=f"kgpath_{e['tick']}", theme=None)
 
 
 def _recommendation(e: dict) -> None:
