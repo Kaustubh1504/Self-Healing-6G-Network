@@ -20,8 +20,8 @@ _NODE_RULES = [("cpu_pct", "gt", 90.0), ("memory_pct", "gt", 85.0)]
 _RADIO_RULES = [("packet_loss_pct", "gt", 5.0), ("snr_db", "lt", 15.0), ("utilization_pct", "gt", 80.0)]
 _SYNTH_RULES = [("utilization_pct", "gt", 90.0), ("packet_loss_pct", "gt", 2.0)]
 
-_LATENCY_BASELINE_MULT = 3.0   # synthetic-edge latency flagged above 3x its baseline
-_THROUGHPUT_DROP_PCT = 40.0    # gradual throughput decay over the lookback window
+_LATENCY_BASELINE_MULT = 2.5   # synthetic-edge latency flagged above 2.5x its baseline
+_THROUGHPUT_DROP_PCT = 30.0    # gradual throughput decay over the lookback window
 _DROP_LOOKBACK = 20            # ticks back to compare throughput against
 
 

@@ -49,7 +49,11 @@ def _init_state() -> None:
         return
     graph = build_network()
     st.session_state.graph = graph
-    st.session_state.store = telemetry.init_store(graph)
+    try:
+        st.session_state.store = telemetry.init_store(graph)  # loads real TelecomTS traces
+    except FileNotFoundError:
+        st.error("Real 5G traces not found. Build them first with:  `python -m twin.dataset`")
+        st.stop()
     st.session_state.tick = 0
     st.session_state.running = True
     st.session_state.active_faults = []
