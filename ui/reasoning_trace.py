@@ -21,14 +21,14 @@ _COLORS = {
 }
 
 _STATUS_BLURB = {
-    "idle": "🟢 Idle — monitoring telemetry",
-    "detecting": "🟡 Anomaly detected — confirming (debounce)",
-    "diagnosing": "🔵 Diagnosing root cause",
-    "planning": "🟣 Planning remediation",
-    "awaiting_approval": "⏸ Awaiting manual approval",
-    "executing": "🟢 Fix applied — confirming recovery",
-    "resolved": "✅ Resolved",
-    "failed": "❌ Healing failed",
+    "idle": "Idle, monitoring telemetry",
+    "detecting": "Anomaly detected, confirming (debounce)",
+    "diagnosing": "Diagnosing root cause",
+    "planning": "Planning remediation",
+    "awaiting_approval": "Awaiting manual approval",
+    "executing": "Fix applied, confirming recovery",
+    "resolved": "Resolved",
+    "failed": "Healing failed",
 }
 
 
@@ -78,12 +78,12 @@ def _kg_path_figure(kg, root_cause: str) -> go.Figure | None:
 
 def _detection(e: dict) -> None:
     lines = [f"`{v['entity']}` {v['metric']} = **{v['value']}** (threshold {v['threshold']})" for v in e["violations"]]
-    st.markdown(f"⚠ **Anomaly detected at tick {e['tick']}** — {len(lines)} violation(s):")
+    st.markdown(f"**Anomaly detected at tick {e['tick']}** ({len(lines)} violation(s)):")
     st.markdown("\n".join(f"- {ln}" for ln in lines))
 
 
 def _diagnosis(e: dict, kg) -> None:
-    st.markdown(f"🔍 **Root cause: `{e['root_cause']}`**  (confidence {e['confidence']:.2f})")
+    st.markdown(f"**Root cause: `{e['root_cause']}`**  (confidence {e['confidence']:.2f})")
     st.markdown(e["reasoning"])
     st.caption("Knowledge-graph evidence:")
     st.markdown("\n".join(f"- {ev}" for ev in e["kg_evidence"]))
@@ -94,14 +94,14 @@ def _diagnosis(e: dict, kg) -> None:
 
 
 def _recommendation(e: dict) -> None:
-    st.markdown(f"📋 **Recommended action: `{e['action']}`** — {e['description']}")
+    st.markdown(f"**Recommended action: `{e['action']}`** ({e['description']})")
     st.markdown(f"Target entities: {', '.join(e['target_entities'])}")
-    st.info("Auto-heal is OFF — click **Apply recommended fix** in the sidebar to execute.")
+    st.info("Auto-heal is OFF. Click **Apply recommended fix** in the sidebar to execute.")
 
 
 def _planning(e: dict) -> None:
-    verdict = "✅ Approved" if e["approved"] else "❌ Rejected"
-    st.markdown(f"📋 **Proposed action: `{e['action']}`** — {verdict}")
+    verdict = "Approved" if e["approved"] else "Rejected"
+    st.markdown(f"**Proposed action: `{e['action']}`** ({verdict})")
     st.markdown(e["verification_reasoning"])
     if e.get("predicted_outcome"):
         st.caption(f"Predicted outcome: {e['predicted_outcome']}")
@@ -109,16 +109,16 @@ def _planning(e: dict) -> None:
 
 def _execution(e: dict) -> None:
     if e.get("applied") is False:
-        st.markdown(f"❌ **Not applied** — {e.get('note', 'action rejected')}")
+        st.markdown(f"**Not applied.** {e.get('note', 'action rejected')}")
         return
     if e.get("success") is None:
-        st.markdown(f"⏳ **Action `{e['action_taken']}` applied at tick {e['tick']}** — confirming recovery…")
+        st.markdown(f"**Action `{e['action_taken']}` applied at tick {e['tick']}.** Confirming recovery.")
         return
     if e["success"]:
         post = ", ".join(f"{k} {v['status']}" for k, v in e.get("post_state", {}).items())
-        st.markdown(f"✅ **Recovered in {e['recovery_ticks']} ticks** via `{e['action_taken']}`. {post}")
+        st.markdown(f"**Recovered in {e['recovery_ticks']} ticks** via `{e['action_taken']}`. {post}")
     else:
-        st.markdown(f"❌ **Recovery not confirmed** after applying `{e['action_taken']}`.")
+        st.markdown(f"**Recovery not confirmed** after applying `{e['action_taken']}`.")
 
 
 _RENDERERS = {
@@ -154,7 +154,7 @@ def render(state: dict, kg) -> None:
     trace = state["trace"]
     if not trace:
         st.info("No healing cycle yet.\n\n**Inject a fault** from the sidebar (with the sim "
-                "running) to start the detect → diagnose → plan → execute loop. The agents' "
+                "running) to start the detect, diagnose, plan and execute loop. The agents' "
                 "reasoning will appear here.")
         return
 

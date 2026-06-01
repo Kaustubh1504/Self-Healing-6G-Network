@@ -92,12 +92,12 @@ with st.sidebar:
 
     col_run, col_step = st.columns(2)
     with col_run:
-        toggle = "⏸ Pause" if st.session_state.running else "▶ Start"
+        toggle = "Pause" if st.session_state.running else "Start"
         if st.button(toggle, use_container_width=True):
             st.session_state.running = not st.session_state.running
             st.rerun()
     with col_step:
-        if st.button("⏭ Step", use_container_width=True, disabled=st.session_state.running,
+        if st.button("Step", use_container_width=True, disabled=st.session_state.running,
                      help="Advance one tick (while paused) to watch the loop step by step."):
             st.session_state.do_step = True
             st.rerun()
@@ -122,13 +122,13 @@ with st.sidebar:
                    "Manual mode still runs (KG-derived diagnosis).")
     if st.session_state.healing["status"] == "awaiting_approval":
         rec = st.session_state.healing["pending_action"]
-        if st.button(f"✅ Apply recommended fix: {rec['action']}", use_container_width=True):
+        if st.button(f"Apply recommended fix: {rec['action']}", use_container_width=True):
             st.session_state.approve_clicked = True
             st.rerun()
 
     st.subheader("Inject fault")
     for name in faults.SCENARIO_NAMES:
-        if st.button(f"⚠ {faults.scenario_label(name)}", use_container_width=True, key=f"fault_{name}"):
+        if st.button(faults.scenario_label(name), use_container_width=True, key=f"fault_{name}"):
             st.session_state.active_faults.append(faults.make_fault(name, st.session_state.tick))
             st.session_state.fault_ticks.append(st.session_state.tick)
             st.rerun()
@@ -150,7 +150,7 @@ st.session_state.approve_clicked = False
 _busy = st.session_state.active_faults and st.session_state.healing["status"] in (
     "detecting", "diagnosing", "planning", "awaiting_approval",
 )
-_spinner = st.spinner("🧠 Agents reasoning…") if _busy else contextlib.nullcontext()
+_spinner = st.spinner("Agents reasoning...") if _busy else contextlib.nullcontext()
 try:
     with _spinner:
         st.session_state.healing = orchestrator.step(
@@ -194,9 +194,9 @@ with main_col:
     real_edges = {faults.edge_id(u, v) for u, v, d in graph.edges(data=True) if "traces" in d}
     if selected in st.session_state.store:
         if selected in real_edges:
-            st.caption("📡 Data source: **real TelecomTS 5G trace**")
+            st.caption("Data source: **real TelecomTS 5G trace**")
         else:
-            st.caption("🔧 Data source: **synthetic**")
+            st.caption("Data source: **synthetic**")
         tele_fig = build_telemetry_figure(
             st.session_state.store[selected], selected, st.session_state.fault_ticks
         )
@@ -206,7 +206,7 @@ with main_col:
 
 # ----- Reasoning trace: the self-healing agent pipeline, step by step -----
 with healing_col:
-    st.subheader("🧠 Agent self-healing")
+    st.subheader("Agent self-healing")
     if st.session_state.get("healing_error"):
         st.error("Healing loop error (the agents hit an exception):")
         st.code(st.session_state.healing_error)

@@ -315,14 +315,14 @@ class HealingState(TypedDict):
 
 **Content:** A scrollable log showing each agent's output in sequence when a healing cycle runs:
 
-1. **Detection** — "⚠ Anomaly detected at tick 234: BS1-UE1 packet_loss_pct = 8.2% (threshold: 5%), BS1-UE1 snr_db = 12.1 dB (threshold: 15 dB)"
+1. **Detection** — "Anomaly detected at tick 234: BS1-UE1 packet_loss_pct = 8.2% (threshold: 5%), BS1-UE1 snr_db = 12.1 dB (threshold: 15 dB)"
 
-2. **Diagnosis** — "🔍 Root cause: RF Interference (confidence: 0.92). Evidence: KG pattern match — high BLER + low SNR indicates rf_interference. Telemetry shows SNR dropped from 21 dB to 12 dB over 5 ticks, consistent with jammer onset. Affected: BS1, BS1-UE1."
+2. **Diagnosis** — "Root cause: RF Interference (confidence: 0.92). Evidence: KG pattern match — high BLER + low SNR indicates rf_interference. Telemetry shows SNR dropped from 21 dB to 12 dB over 5 ticks, consistent with jammer onset. Affected: BS1, BS1-UE1."
    - **KG path highlight:** Show the matched path in the knowledge graph: `[high_bler+low_snr] --indicates--> [rf_interference] --resolvedBy--> [isolate_frequency_band]`. Render this as a small inline Plotly directed graph with the matched nodes highlighted. This is the KG visualization.
 
-3. **Planning** — "📋 Proposed action: Isolate frequency band on BS1. Verification: restarting on the isolated band will restore SNR and reduce BLER. Dependency check: no downstream impact on EDGE1 or core. Approved: ✅"
+3. **Planning** — "Proposed action: Isolate frequency band on BS1. Verification: restarting on the isolated band will restore SNR and reduce BLER. Dependency check: no downstream impact on EDGE1 or core. Approved: yes"
 
-4. **Execution** — "✅ Action applied at tick 237. Recovery confirmed at tick 242: BS1-UE1 SNR = 21.3 dB, BLER = 0.1%."
+4. **Execution** — "Action applied at tick 237. Recovery confirmed at tick 242: BS1-UE1 SNR = 21.3 dB, BLER = 0.1%."
 
 **Formatting:**
 - Each step is a collapsible expander (Streamlit `st.expander`)
