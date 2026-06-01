@@ -1,7 +1,5 @@
 # Self-Healing 6G Network (Proof of Concept)
 
-A proof-of-concept of the multi-agent self-healing architecture from Wu et al. (KDD 2026), built around two infrastructure components: a network digital twin and a telecommunications knowledge graph. The digital twin (NetworkX) streams real 5G telemetry from TelecomTS through a 6G-inspired topology with fault cascade propagation. The knowledge graph (RDFLib + SPARQL) encodes alarm-to-root-cause-to-remediation triples, grounding diagnosis in structured domain knowledge. When a fault fires, four LangGraph-orchestrated agents detect the anomaly, diagnose via the KG, verify the fix against the twin, and execute recovery, with every step visible in a live reasoning trace.
-
 ## Demo
 
 https://github.com/user-attachments/assets/6e6661b8-ccda-4b2b-a379-904a0fe7e6e4
@@ -9,6 +7,10 @@ https://github.com/user-attachments/assets/6e6661b8-ccda-4b2b-a379-904a0fe7e6e4
 ![Dashboard screenshot](docs/demo.png)
 
 [Watch the full demo on YouTube](https://youtu.be/F7ZEzsfiHCE)
+
+## Overview
+
+A proof-of-concept of the multi-agent self-healing architecture from Wu et al. (KDD 2026), built around two infrastructure components: a network digital twin and a telecommunications knowledge graph. The digital twin (NetworkX) streams real 5G telemetry from TelecomTS through a 6G-inspired topology with fault cascade propagation. The knowledge graph (RDFLib + SPARQL) encodes alarm-to-root-cause-to-remediation triples, grounding diagnosis in structured domain knowledge. When a fault fires, four LangGraph-orchestrated agents detect the anomaly, diagnose via the KG, verify the fix against the twin, and execute recovery, with every step visible in a live reasoning trace.
 
 ```bash
 pip install -r requirements.txt
