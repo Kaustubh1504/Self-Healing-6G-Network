@@ -4,6 +4,8 @@
 
 <video src="https://github.com/user-attachments/assets/6e6661b8-ccda-4b2b-a379-904a0fe7e6e4" controls></video>
 
+> The video has audio. Please unmute the player to hear the walkthrough.
+
 ![Dashboard screenshot](docs/demo.png)
 
 [Watch the full demo on YouTube](https://youtu.be/F7ZEzsfiHCE)
